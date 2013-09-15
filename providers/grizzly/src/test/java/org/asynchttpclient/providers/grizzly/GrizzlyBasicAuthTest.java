@@ -26,6 +26,6 @@ public class GrizzlyBasicAuthTest extends BasicAuthTest {
 
     @Override
     public String getProviderClass() {
-    	return GrizzlyAsyncHttpProvider.class.getName();
+        return GrizzlyAsyncHttpProvider.class.getName();
     }
 }

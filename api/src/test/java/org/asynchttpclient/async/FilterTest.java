@@ -63,7 +63,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void basicTest() throws Throwable {
+    public void basicTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         b.addRequestFilter(new ThrottleRequestFilter(100));
 
@@ -78,7 +78,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void loadThrottleTest() throws Throwable {
+    public void loadThrottleTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         b.addRequestFilter(new ThrottleRequestFilter(10));
 
@@ -100,7 +100,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void maxConnectionsText() throws Throwable {
+    public void maxConnectionsText() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         b.addRequestFilter(new ThrottleRequestFilter(0, 1000));
         AsyncHttpClient c = getAsyncHttpClient(b.build());
@@ -121,7 +121,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void basicResponseFilterTest() throws Throwable {
+    public void basicResponseFilterTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         b.addResponseFilter(new ResponseFilter() {
 
@@ -146,7 +146,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void replayResponseFilterTest() throws Throwable {
+    public void replayResponseFilterTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         final AtomicBoolean replay = new AtomicBoolean(true);
 
@@ -178,7 +178,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void replayStatusCodeResponseFilterTest() throws Throwable {
+    public void replayStatusCodeResponseFilterTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         final AtomicBoolean replay = new AtomicBoolean(true);
 
@@ -210,7 +210,7 @@ public abstract class FilterTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void replayHeaderResponseFilterTest() throws Throwable {
+    public void replayHeaderResponseFilterTest() throws Exception {
         AsyncHttpClientConfig.Builder b = new AsyncHttpClientConfig.Builder();
         final AtomicBoolean replay = new AtomicBoolean(true);
 

@@ -12,6 +12,7 @@
  */
 package org.asynchttpclient.providers.netty4;
 
+import static org.asynchttpclient.async.util.TestUtils.*;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
@@ -36,9 +37,6 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
 import org.asynchttpclient.async.AbstractBasicTest;
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.testng.annotations.BeforeClass;
@@ -54,15 +52,8 @@ public class RetryNonBlockingIssue extends AbstractBasicTest {
 
     @BeforeClass(alwaysRun = true)
     public void setUpGlobal() throws Exception {
-        server = new Server();
-
         port1 = findFreePort();
-
-        Connector listener = new SelectChannelConnector();
-        listener.setHost("localhost");
-        listener.setPort(port1);
-
-        server.addConnector(listener);
+        server = newJettyHttpServer(port1);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -77,12 +68,12 @@ public class RetryNonBlockingIssue extends AbstractBasicTest {
     }
 
     private ListenableFuture<Response> testMethodRequest(AsyncHttpClient client, int requests, String action, String id) throws IOException {
-        Request r = new RequestBuilder("GET")/**/
-        .setUrl(getTargetUrl())/**/
-        .addQueryParameter(action, "1")/**/
-        .addQueryParameter("maxRequests", "" + requests)/**/
-        .addQueryParameter("id", id)/**/
-        .build();
+        Request r = new RequestBuilder("GET")//
+                .setUrl(getTargetUrl())//
+                .addQueryParameter(action, "1")//
+                .addQueryParameter("maxRequests", "" + requests)//
+                .addQueryParameter("id", id)//
+                .build();
         return client.executeRequest(r);
     }
 
@@ -96,12 +87,12 @@ public class RetryNonBlockingIssue extends AbstractBasicTest {
     @Test
     public void testRetryNonBlocking() throws IOException, InterruptedException, ExecutionException {
 
-        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()/**/
-        .setAllowPoolingConnection(true)/**/
-        .setMaximumConnectionsTotal(100)/**/
-        .setConnectionTimeoutInMs(60000)/**/
-        .setRequestTimeoutInMs(30000)/**/
-        .build();
+        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()//
+                .setAllowPoolingConnection(true)//
+                .setMaximumConnectionsTotal(100)//
+                .setConnectionTimeoutInMs(60000)//
+                .setRequestTimeoutInMs(30000)//
+                .build();
 
         AsyncHttpClient client = getAsyncHttpClient(config);
         try {
@@ -132,13 +123,13 @@ public class RetryNonBlockingIssue extends AbstractBasicTest {
     @Test
     public void testRetryNonBlockingAsyncConnect() throws IOException, InterruptedException, ExecutionException {
 
-        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()/**/
-        .setAllowPoolingConnection(true)/**/
-        .setMaximumConnectionsTotal(100)/**/
-        .setConnectionTimeoutInMs(60000)/**/
-        .setRequestTimeoutInMs(30000)/**/
-        .setAsyncConnectMode(true) /**/
-        .build();
+        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()//
+                .setAllowPoolingConnection(true)//
+                .setMaximumConnectionsTotal(100)//
+                .setConnectionTimeoutInMs(60000)//
+                .setRequestTimeoutInMs(30000)//
+                .setAsyncConnectMode(true) //
+                .build();
 
         AsyncHttpClient client = getAsyncHttpClient(config);
 
@@ -173,13 +164,13 @@ public class RetryNonBlockingIssue extends AbstractBasicTest {
         NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
         nettyConfig.setUseBlockingIO(true);
 
-        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()/**/
-        .setAllowPoolingConnection(true)/**/
-        .setMaximumConnectionsTotal(100)/**/
-        .setConnectionTimeoutInMs(60000)/**/
-        .setRequestTimeoutInMs(30000)/**/
-        .setAsyncHttpClientProviderConfig(nettyConfig)/**/
-        .build();
+        AsyncHttpClientConfig config = new AsyncHttpClientConfig.Builder()//
+                .setAllowPoolingConnection(true)//
+                .setMaximumConnectionsTotal(100)//
+                .setConnectionTimeoutInMs(60000)//
+                .setRequestTimeoutInMs(30000)//
+                .setAsyncHttpClientProviderConfig(nettyConfig)//
+                .build();
 
         AsyncHttpClient client = getAsyncHttpClient(config);
 

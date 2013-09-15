@@ -56,7 +56,7 @@ public abstract class Expect100ContinueTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void Expect100Continue() throws Throwable {
+    public void Expect100Continue() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             ClassLoader cl = getClass().getClassLoader();

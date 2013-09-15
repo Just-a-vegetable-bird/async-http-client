@@ -42,7 +42,7 @@ public abstract class SimpleAsyncHttpClientTest extends AbstractBasicTest {
     public abstract String getProviderClass();
 
     @Test(groups = { "standalone", "default_provider" })
-    public void inpuStreamBodyConsumerTest() throws Throwable {
+    public void inpuStreamBodyConsumerTest() throws Exception {
 
         SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder().setProviderClass(getProviderClass()).setIdleConnectionInPoolTimeoutInMs(100).setMaximumConnectionsTotal(50).setRequestTimeoutInMs(5 * 60 * 1000).setUrl(getTargetUrl()).setHeader("Content-Type", "text/html").build();
         try {
@@ -58,7 +58,7 @@ public abstract class SimpleAsyncHttpClientTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void stringBuilderBodyConsumerTest() throws Throwable {
+    public void stringBuilderBodyConsumerTest() throws Exception {
 
         SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder().setProviderClass(getProviderClass()).setIdleConnectionInPoolTimeoutInMs(100).setMaximumConnectionsTotal(50).setRequestTimeoutInMs(5 * 60 * 1000).setUrl(getTargetUrl()).setHeader("Content-Type", "text/html").build();
         try {
@@ -75,7 +75,7 @@ public abstract class SimpleAsyncHttpClientTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void byteArrayOutputStreamBodyConsumerTest() throws Throwable {
+    public void byteArrayOutputStreamBodyConsumerTest() throws Exception {
 
         SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder().setProviderClass(getProviderClass()).setIdleConnectionInPoolTimeoutInMs(100).setMaximumConnectionsTotal(50).setRequestTimeoutInMs(5 * 60 * 1000).setUrl(getTargetUrl()).setHeader("Content-Type", "text/html").build();
         try {
@@ -92,7 +92,7 @@ public abstract class SimpleAsyncHttpClientTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void requestByteArrayOutputStreamBodyConsumerTest() throws Throwable {
+    public void requestByteArrayOutputStreamBodyConsumerTest() throws Exception {
 
         SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder().setProviderClass(getProviderClass()).setUrl(getTargetUrl()).build();
         try {
@@ -112,7 +112,7 @@ public abstract class SimpleAsyncHttpClientTest extends AbstractBasicTest {
      * See https://issues.sonatype.org/browse/AHC-5
      */
     @Test(groups = { "standalone", "default_provider" }, enabled = true)
-    public void testPutZeroBytesFileTest() throws Throwable {
+    public void testPutZeroBytesFileTest() throws Exception {
         SimpleAsyncHttpClient client = new SimpleAsyncHttpClient.Builder().setProviderClass(getProviderClass()).setIdleConnectionInPoolTimeoutInMs(100).setMaximumConnectionsTotal(50).setRequestTimeoutInMs(5 * 1000).setUrl(getTargetUrl() + "/testPutZeroBytesFileTest.txt").setHeader("Content-Type", "text/plain")
                 .build();
         try {

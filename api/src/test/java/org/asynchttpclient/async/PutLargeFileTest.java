@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.Assert;
@@ -35,10 +36,9 @@ public abstract class PutLargeFileTest extends AbstractBasicTest {
     @Test(groups = { "standalone", "default_provider" }, enabled = true)
     public void testPutLargeFile() throws Exception {
 
-        long repeats = (1024 * 1024 * 100 / PATTERN_BYTES.length) + 1;
-        File file = createTempFile(PATTERN_BYTES, (int) repeats);
+        File file = TestUtils.createTempFile(1024 * 1024);
 
-        int timeout = (int) (repeats / 1000);
+        int timeout = (int) file.length() / 1000;
 
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setConnectionTimeoutInMs(timeout).build());
         try {
@@ -52,8 +52,7 @@ public abstract class PutLargeFileTest extends AbstractBasicTest {
     @Test(groups = { "standalone", "default_provider" })
     public void testPutSmallFile() throws Exception {
 
-        long repeats = (1024 / PATTERN_BYTES.length) + 1;
-        File file = createTempFile(PATTERN_BYTES, (int) repeats);
+        File file = TestUtils.createTempFile(1024);
 
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {

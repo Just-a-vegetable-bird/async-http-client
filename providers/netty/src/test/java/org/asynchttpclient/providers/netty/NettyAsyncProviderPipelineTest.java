@@ -43,7 +43,7 @@ public class NettyAsyncProviderPipelineTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "netty_provider" })
-    public void asyncPipelineTest() throws Throwable {
+    public void asyncPipelineTest() throws Exception {
         AsyncHttpClient p = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setCompressionEnabled(true).build());
         try {
             final CountDownLatch l = new CountDownLatch(1);

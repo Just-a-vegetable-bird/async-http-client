@@ -31,19 +31,4 @@ public class GrizzlyRedirectConnectionUsageTest extends RedirectConnectionUsageT
     public AsyncHttpClient getAsyncHttpClient(AsyncHttpClientConfig config) {
         return GrizzlyProviderUtil.grizzlyProvider(config);
     }
-
-    @Override
-    protected AsyncHttpProviderConfig getProviderConfig() {
-        final GrizzlyAsyncHttpProviderConfig config = new GrizzlyAsyncHttpProviderConfig();
-        config.addProperty(TRANSPORT_CUSTOMIZER, new TransportCustomizer() {
-            @Override
-            public void customize(TCPNIOTransport transport, FilterChainBuilder builder) {
-                if (System.getProperty("blockingio") != null) {
-                    transport.configureBlocking(true);
-                }
-                transport.setIOStrategy(SameThreadIOStrategy.getInstance());
-            }
-        });
-        return config;
-    }
 }

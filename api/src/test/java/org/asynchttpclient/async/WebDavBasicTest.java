@@ -16,6 +16,7 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.asynchttpclient.webdav.WebDavCompletionHandlerBase;
 import org.asynchttpclient.webdav.WebDavResponse;
 import org.apache.catalina.Context;
@@ -45,7 +46,7 @@ public abstract class WebDavBasicTest extends AbstractBasicTest {
     @BeforeClass(alwaysRun = true)
     public void setUpGlobal() throws Exception {
 
-        port1 = findFreePort();
+        port1 = TestUtils.findFreePort();
         embedded = new Embedded();
         String path = new File(".").getAbsolutePath();
         embedded.setCatalinaHome(path);

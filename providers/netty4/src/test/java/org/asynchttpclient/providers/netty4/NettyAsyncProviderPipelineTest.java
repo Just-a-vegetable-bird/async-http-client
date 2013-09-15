@@ -40,7 +40,7 @@ public class NettyAsyncProviderPipelineTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "netty_provider" })
-    public void asyncPipelineTest() throws Throwable {
+    public void asyncPipelineTest() throws Exception {
 
         NettyAsyncHttpProviderConfig nettyConfig = new NettyAsyncHttpProviderConfig();
         nettyConfig.setHttpAdditionalChannelInitializer(new AdditionalChannelInitializer() {

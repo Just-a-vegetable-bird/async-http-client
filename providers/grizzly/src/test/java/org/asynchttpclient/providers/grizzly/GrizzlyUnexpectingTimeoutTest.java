@@ -67,7 +67,7 @@ public class GrizzlyUnexpectingTimeoutTest extends AbstractBasicTest {
                         response.getOutputStream().print(MSG);
                         response.getOutputStream().flush();
                     } catch (IOException e) {
-                        log.error(e.getMessage(), e);
+                        logger.error(e.getMessage(), e);
                     }
                 }
             }).start();

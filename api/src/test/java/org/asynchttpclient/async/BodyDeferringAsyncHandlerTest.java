@@ -17,6 +17,7 @@ import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.BodyDeferringAsyncHandler;
 import org.asynchttpclient.BodyDeferringAsyncHandler.BodyDeferringInputStream;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.Assert;
@@ -25,6 +26,7 @@ import org.testng.annotations.Test;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -242,7 +244,7 @@ public abstract class BodyDeferringAsyncHandlerTest extends AbstractBasicTest {
 
     @Test(groups = { "standalone", "default_provider" })
     public void testConnectionRefused() throws IOException, ExecutionException, TimeoutException, InterruptedException {
-        int newPortWithoutAnyoneListening = findFreePort();
+        int newPortWithoutAnyoneListening = TestUtils.findFreePort();
         AsyncHttpClient client = getAsyncHttpClient(getAsyncHttpClientConfig());
         try {
             AsyncHttpClient.BoundRequestBuilder r = client.prepareGet("http://127.0.0.1:" + newPortWithoutAnyoneListening + "/testConnectionRefused");

@@ -34,6 +34,7 @@ import org.asynchttpclient.HttpResponseBodyPart;
 import org.asynchttpclient.HttpResponseHeaders;
 import org.asynchttpclient.HttpResponseStatus;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.annotations.Test;
@@ -68,7 +69,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
             final AtomicBoolean headerSent = new AtomicBoolean(false);
             final AtomicBoolean operationCompleted = new AtomicBoolean(false);
 
-            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(SIMPLE_TEXT_FILE).execute(new AsyncCompletionHandler<Response>() {
+            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(TestUtils.SIMPLE_TEXT_FILE).execute(new AsyncCompletionHandler<Response>() {
 
                 public STATE onHeaderWriteCompleted() {
                     headerSent.set(true);
@@ -99,7 +100,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
     public void zeroCopyPutTest() throws IOException, ExecutionException, TimeoutException, InterruptedException, URISyntaxException {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
-            Future<Response> f = client.preparePut("http://127.0.0.1:" + port1 + "/").setBody(SIMPLE_TEXT_FILE).execute();
+            Future<Response> f = client.preparePut("http://127.0.0.1:" + port1 + "/").setBody(TestUtils.SIMPLE_TEXT_FILE).execute();
             Response resp = f.get();
             assertNotNull(resp);
             assertEquals(resp.getStatusCode(), HttpServletResponse.SC_OK);
@@ -121,7 +122,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
         tmp.deleteOnExit();
         final FileOutputStream stream = new FileOutputStream(tmp);
         try {
-            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(SIMPLE_TEXT_FILE).execute(new AsyncHandler<Response>() {
+            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(TestUtils.SIMPLE_TEXT_FILE).execute(new AsyncHandler<Response>() {
                 public void onThrowable(Throwable t) {
                 }
 
@@ -143,7 +144,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
                 }
             }).get();
             assertNull(resp);
-            assertEquals(SIMPLE_TEXT_FILE.length(), tmp.length());
+            assertEquals(TestUtils.SIMPLE_TEXT_FILE.length(), tmp.length());
         } finally {
             stream.close();
             client.close();
@@ -158,7 +159,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
         final FileOutputStream stream = new FileOutputStream(tmp);
         try {
 
-            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(SIMPLE_TEXT_FILE).execute(new AsyncHandler<Response>() {
+            Response resp = client.preparePost("http://127.0.0.1:" + port1 + "/").setBody(TestUtils.SIMPLE_TEXT_FILE).execute(new AsyncHandler<Response>() {
                 public void onThrowable(Throwable t) {
                 }
 
@@ -185,7 +186,7 @@ public abstract class ZeroCopyFileTest extends AbstractBasicTest {
                 }
             }).get();
             assertNull(resp);
-            assertEquals(SIMPLE_TEXT_FILE.length(), tmp.length());
+            assertEquals(TestUtils.SIMPLE_TEXT_FILE.length(), tmp.length());
         } finally {
             stream.close();
             client.close();

@@ -74,9 +74,9 @@ public abstract class AsyncStreamLifecycleTest extends AbstractBasicTest {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            log.error("Failed to sleep for 100 ms.", e);
+                            logger.error("Failed to sleep for 100 ms.", e);
                         }
-                        log.info("Delivering part1.");
+                        logger.info("Delivering part1.");
                         writer.write("part1");
                         writer.flush();
                     }
@@ -86,9 +86,9 @@ public abstract class AsyncStreamLifecycleTest extends AbstractBasicTest {
                         try {
                             Thread.sleep(200);
                         } catch (InterruptedException e) {
-                            log.error("Failed to sleep for 200 ms.", e);
+                            logger.error("Failed to sleep for 200 ms.", e);
                         }
-                        log.info("Delivering part2.");
+                        logger.info("Delivering part2.");
                         writer.write("part2");
                         writer.flush();
                         continuation.complete();
@@ -118,7 +118,7 @@ public abstract class AsyncStreamLifecycleTest extends AbstractBasicTest {
 
                 public STATE onBodyPartReceived(HttpResponseBodyPart e) throws Exception {
                     String s = new String(e.getBodyPartBytes());
-                    log.info("got part: {}", s);
+                    logger.info("got part: {}", s);
                     queue.put(s);
                     return STATE.CONTINUE;
                 }

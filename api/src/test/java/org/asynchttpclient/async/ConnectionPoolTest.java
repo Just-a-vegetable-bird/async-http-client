@@ -93,7 +93,7 @@ public abstract class ConnectionPoolTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" }, enabled = true, invocationCount = 10, alwaysRun = true)
-    public void asyncDoGetKeepAliveHandlerTest_channelClosedDoesNotFail() throws Throwable {
+    public void asyncDoGetKeepAliveHandlerTest_channelClosedDoesNotFail() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // Use a l in case the assert fail
@@ -138,7 +138,7 @@ public abstract class ConnectionPoolTest extends AbstractBasicTest {
     public abstract void testValidConnectionsPool();
 
     @Test(groups = { "standalone", "default_provider" })
-    public void multipleMaxConnectionOpenTest() throws Throwable {
+    public void multipleMaxConnectionOpenTest() throws Exception {
         AsyncHttpClientConfig cg = new AsyncHttpClientConfig.Builder().setAllowPoolingConnection(true).setConnectionTimeoutInMs(5000).setMaximumConnectionsTotal(1).build();
         AsyncHttpClient c = getAsyncHttpClient(cg);
         try {
@@ -166,7 +166,7 @@ public abstract class ConnectionPoolTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void multipleMaxConnectionOpenTestWithQuery() throws Throwable {
+    public void multipleMaxConnectionOpenTestWithQuery() throws Exception {
         AsyncHttpClientConfig cg = new AsyncHttpClientConfig.Builder().setAllowPoolingConnection(true).setConnectionTimeoutInMs(5000).setMaximumConnectionsTotal(1).build();
         AsyncHttpClient c = getAsyncHttpClient(cg);
         try {
@@ -196,11 +196,11 @@ public abstract class ConnectionPoolTest extends AbstractBasicTest {
     /**
      * This test just make sure the hack used to catch disconnected channel under win7 doesn't throw any exception. The onComplete method must be only called once.
      * 
-     * @throws Throwable
+     * @throws Exception
      *             if something wrong happens.
      */
     @Test(groups = { "standalone", "default_provider" })
-    public void win7DisconnectTest() throws Throwable {
+    public void win7DisconnectTest() throws Exception {
         final AtomicInteger count = new AtomicInteger(0);
 
         AsyncHttpClient client = getAsyncHttpClient(null);
@@ -233,7 +233,7 @@ public abstract class ConnectionPoolTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void asyncHandlerOnThrowableTest() throws Throwable {
+    public void asyncHandlerOnThrowableTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final AtomicInteger count = new AtomicInteger();

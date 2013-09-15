@@ -34,7 +34,7 @@ public abstract class NoNullResponseTest extends AbstractBasicTest {
     private static final String GOOGLE_HTTPS_URL = "https://www.google.com";
 
     @Test(invocationCount = 4, groups = { "online", "default_provider" })
-    public void multipleSslRequestsWithDelayAndKeepAlive() throws Throwable {
+    public void multipleSslRequestsWithDelayAndKeepAlive() throws Exception {
         final AsyncHttpClient client = create();
         try {
             final BoundRequestBuilder builder = client.prepareGet(GOOGLE_HTTPS_URL);

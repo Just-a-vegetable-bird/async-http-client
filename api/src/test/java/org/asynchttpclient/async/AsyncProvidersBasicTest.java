@@ -44,7 +44,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
 import org.asynchttpclient.AsyncCompletionHandler;
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig;
@@ -60,18 +59,16 @@ import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
 import org.asynchttpclient.StringPart;
+import org.asynchttpclient.async.util.TestUtils;
 
 public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
 
-    private static final String UTF_8 = "text/html;charset=UTF-8";
-
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncProviderEncodingTest() throws Throwable {
+    public void asyncProviderEncodingTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Request request = new RequestBuilder("GET").setUrl(getTargetUrl() + "?q=+%20x").build();
-            String requestUrl = request.getUrl();
-            Assert.assertEquals(requestUrl, getTargetUrl() + "?q=%20%20x");
+            Assert.assertEquals(request.getUrl(), getTargetUrl() + "?q=%20%20x");
 
             String url = client.executeRequest(request, new AsyncCompletionHandler<String>() {
                 @Override
@@ -93,7 +90,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncProviderEncodingTest2() throws Throwable {
+    public void asyncProviderEncodingTest2() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Request request = new RequestBuilder("GET").setUrl(getTargetUrl() + "").addQueryParameter("q", "a b").build();
@@ -118,7 +115,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void emptyRequestURI() throws Throwable {
+    public void emptyRequestURI() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Request request = new RequestBuilder("GET").setUrl(getTargetUrl()).build();
@@ -143,11 +140,12 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncProviderContentLenghtGETTest() throws Throwable {
+    public void asyncProviderContentLenghtGETTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         final HttpURLConnection connection = (HttpURLConnection) new URL(getTargetUrl()).openConnection();
         connection.connect();
         final int ct = connection.getContentLength();
+        connection.disconnect();
         try {
             final CountDownLatch l = new CountDownLatch(1);
 
@@ -189,7 +187,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncContentTypeGETTest() throws Throwable {
+    public void asyncContentTypeGETTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -200,7 +198,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                 public Response onCompleted(Response response) throws Exception {
                     try {
                         assertEquals(response.getStatusCode(), 200);
-                        assertEquals(response.getContentType(), UTF_8);
+                        assertEquals(response.getContentType(), TestUtils.TEXT_HTML_CONTENT_TYPE_WITH_UTF_8_CHARSET);
                     } finally {
                         l.countDown();
                     }
@@ -216,7 +214,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncHeaderGETTest() throws Throwable {
+    public void asyncHeaderGETTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -227,7 +225,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                 public Response onCompleted(Response response) throws Exception {
                     try {
                         assertEquals(response.getStatusCode(), 200);
-                        assertEquals(response.getContentType(), UTF_8);
+                        assertEquals(response.getContentType(), TestUtils.TEXT_HTML_CONTENT_TYPE_WITH_UTF_8_CHARSET);
                     } finally {
                         l.countDown();
                     }
@@ -244,7 +242,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncHeaderPOSTTest() throws Throwable {
+    public void asyncHeaderPOSTTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -261,7 +259,6 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                 @Override
                 public Response onCompleted(Response response) throws Exception {
                     try {
-                        System.out.println(">>>>> " + response.getStatusText());
                         assertEquals(response.getStatusCode(), 200);
                         for (int i = 1; i < 5; i++) {
                             assertEquals(response.getHeader("X-Test" + i), "Test" + i);
@@ -282,7 +279,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncParamPOSTTest() throws Throwable {
+    public void asyncParamPOSTTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -303,7 +300,6 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                         for (int i = 1; i < 5; i++) {
                             assertEquals(response.getHeader("X-param_" + i), "value_" + i);
                         }
-
                     } finally {
                         l.countDown();
                     }
@@ -320,7 +316,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncStatusHEADTest() throws Throwable {
+    public void asyncStatusHEADTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -355,7 +351,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
 
     // TODO: fix test
     @Test(groups = { "standalone", "default_provider", "async" }, enabled = false)
-    public void asyncStatusHEADContentLenghtTest() throws Throwable {
+    public void asyncStatusHEADContentLenghtTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(120 * 1000).build());
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -389,7 +385,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncNullSchemeTest() throws Throwable {
+    public void asyncNullSchemeTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
 
         try {
@@ -403,7 +399,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetTransferEncodingTest() throws Throwable {
+    public void asyncDoGetTransferEncodingTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -431,7 +427,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetHeadersTest() throws Throwable {
+    public void asyncDoGetHeadersTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -465,7 +461,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetCookieTest() throws Throwable {
+    public void asyncDoGetCookieTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -502,7 +498,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostDefaultContentType() throws Throwable {
+    public void asyncDoPostDefaultContentType() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -530,7 +526,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostBodyIsoTest() throws Throwable {
+    public void asyncDoPostBodyIsoTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.preparePost(getTargetUrl()).addHeader("X-ISO", "true").setBody("\u017D\u017D\u017D\u017D\u017D\u017D").execute().get();
@@ -541,7 +537,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostBytesTest() throws Throwable {
+    public void asyncDoPostBytesTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -549,11 +545,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -584,7 +576,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostInputStreamTest() throws Throwable {
+    public void asyncDoPostInputStreamTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -592,11 +584,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
             ByteArrayInputStream is = new ByteArrayInputStream(sb.toString().getBytes());
@@ -627,7 +615,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPutInputStreamTest() throws Throwable {
+    public void asyncDoPutInputStreamTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -635,11 +623,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
             ByteArrayInputStream is = new ByteArrayInputStream(sb.toString().getBytes());
@@ -651,9 +635,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                     try {
                         assertEquals(response.getStatusCode(), 200);
                         for (int i = 1; i < 5; i++) {
-                            System.out.println(">>>>> " + response.getHeader("X-param_" + i));
                             assertEquals(response.getHeader("X-param_" + i), "value_" + i);
-
                         }
                     } finally {
                         l.countDown();
@@ -670,7 +652,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostMultiPartTest() throws Throwable {
+    public void asyncDoPostMultiPartTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -702,7 +684,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostBasicGZIPTest() throws Throwable {
+    public void asyncDoPostBasicGZIPTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setCompressionEnabled(true).build());
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -710,11 +692,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -740,18 +718,14 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostProxyTest() throws Throwable {
+    public void asyncDoPostProxyTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setProxyServer(new ProxyServer("127.0.0.1", port2)).build());
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -774,7 +748,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncRequestVirtualServerPOSTTest() throws Throwable {
+    public void asyncRequestVirtualServerPOSTTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
@@ -800,18 +774,14 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPutTest() throws Throwable {
+    public void asyncDoPutTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -824,7 +794,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostLatchBytesTest() throws Throwable {
+    public void asyncDoPostLatchBytesTest() throws Exception {
         AsyncHttpClient c = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -832,11 +802,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -847,9 +813,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
                     try {
                         assertEquals(response.getStatusCode(), 200);
                         for (int i = 1; i < 5; i++) {
-                            System.out.println(">>>>> " + response.getHeader("X-param_" + i));
                             assertEquals(response.getHeader("X-param_" + i), "value_" + i);
-
                         }
                         return response;
                     } finally {
@@ -867,7 +831,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostDelayCancelTest() throws Throwable {
+    public void asyncDoPostDelayCancelTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
@@ -890,7 +854,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostDelayBytesTest() throws Throwable {
+    public void asyncDoPostDelayBytesTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
@@ -923,7 +887,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostNullBytesTest() throws Throwable {
+    public void asyncDoPostNullBytesTest() throws Exception {
 
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
@@ -931,11 +895,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -950,18 +910,14 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostListenerBytesTest() throws Throwable {
+    public void asyncDoPostListenerBytesTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
             h.add("Content-Type", "application/x-www-form-urlencoded");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < 5; i++) {
-                sb.append("param_");
-                sb.append(i);
-                sb.append("=value_");
-                sb.append(i);
-                sb.append("&");
+                sb.append("param_").append(i).append("=value_").append(i).append("&");
             }
             sb.setLength(sb.length() - 1);
 
@@ -988,10 +944,10 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncConnectInvalidFuture() throws Throwable {
+    public void asyncConnectInvalidFuture() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
-            int dummyPort = findFreePort();
+            int dummyPort = TestUtils.findFreePort();
             final AtomicInteger count = new AtomicInteger();
             for (int i = 0; i < 20; i++) {
                 try {
@@ -1016,10 +972,10 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncConnectInvalidPortFuture() throws Throwable {
+    public void asyncConnectInvalidPortFuture() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
-            int dummyPort = findFreePort();
+            int dummyPort = TestUtils.findFreePort();
             try {
                 Response response = client.preparePost(String.format("http://127.0.0.1:%d/", dummyPort)).execute(new AsyncCompletionHandlerAdapter() {
                     @Override
@@ -1040,11 +996,11 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncConnectInvalidPort() throws Throwable {
+    public void asyncConnectInvalidPort() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // pick a random unused local port
-            int port = findFreePort();
+            int port = TestUtils.findFreePort();
 
             try {
                 Response response = client.preparePost(String.format("http://127.0.0.1:%d/", port)).execute(new AsyncCompletionHandlerAdapter() {
@@ -1063,11 +1019,11 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncConnectInvalidHandlerPort() throws Throwable {
+    public void asyncConnectInvalidHandlerPort() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
-            int port = findFreePort();
+            int port = TestUtils.findFreePort();
 
             client.prepareGet(String.format("http://127.0.0.1:%d/", port)).execute(new AsyncCompletionHandlerAdapter() {
                 @Override
@@ -1089,7 +1045,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncConnectInvalidHandlerHost() throws Throwable {
+    public void asyncConnectInvalidHandlerHost() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final CountDownLatch l = new CountDownLatch(1);
@@ -1116,13 +1072,13 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncConnectInvalidFuturePort() throws Throwable {
+    public void asyncConnectInvalidFuturePort() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             final AtomicBoolean called = new AtomicBoolean(false);
             final AtomicBoolean rightCause = new AtomicBoolean(false);
             // pick a random unused local port
-            int port = findFreePort();
+            int port = TestUtils.findFreePort();
 
             try {
                 Response response = client.prepareGet(String.format("http://127.0.0.1:%d/", port)).execute(new AsyncCompletionHandlerAdapter() {
@@ -1146,7 +1102,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncContentLenghtGETTest() throws Throwable {
+    public void asyncContentLenghtGETTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareGet(getTargetUrl()).execute(new AsyncCompletionHandlerAdapter() {
@@ -1165,7 +1121,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncResponseBodyTooLarge() throws Throwable {
+    public void asyncResponseBodyTooLarge() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.preparePost(getTargetUrl()).setBody("0123456789").execute(new AsyncCompletionHandlerAdapter() {
@@ -1183,7 +1139,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncResponseEmptyBody() throws Throwable {
+    public void asyncResponseEmptyBody() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareGet(getTargetUrl()).execute(new AsyncCompletionHandlerAdapter() {
@@ -1201,7 +1157,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "asyncAPI" })
-    public void asyncAPIContentLenghtGETTest() throws Throwable {
+    public void asyncAPIContentLenghtGETTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // Use a l in case the assert fail
@@ -1233,7 +1189,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "asyncAPI" })
-    public void asyncAPIHandlerExceptionTest() throws Throwable {
+    public void asyncAPIHandlerExceptionTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // Use a l in case the assert fail
@@ -1266,7 +1222,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetDelayHandlerTest() throws Throwable {
+    public void asyncDoGetDelayHandlerTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(5 * 1000).build());
         try {
             FluentCaseInsensitiveStringsMap h = new FluentCaseInsensitiveStringsMap();
@@ -1310,7 +1266,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetQueryStringTest() throws Throwable {
+    public void asyncDoGetQueryStringTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // Use a l in case the assert fail
@@ -1343,7 +1299,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoGetKeepAliveHandlerTest() throws Throwable {
+    public void asyncDoGetKeepAliveHandlerTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // Use a l in case the assert fail
@@ -1355,15 +1311,16 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
 
                 @Override
                 public Response onCompleted(Response response) throws Exception {
-                    assertEquals(response.getStatusCode(), 200);
-                    if (remoteAddr == null) {
-                        remoteAddr = response.getHeader("X-KEEP-ALIVE");
-                        l.countDown();
-                    } else {
-                        assertEquals(response.getHeader("X-KEEP-ALIVE"), remoteAddr);
+                    try {
+                        assertEquals(response.getStatusCode(), 200);
+                        if (remoteAddr == null) {
+                            remoteAddr = response.getHeader("X-KEEP-ALIVE");
+                        } else {
+                            assertEquals(response.getHeader("X-KEEP-ALIVE"), remoteAddr);
+                        }
+                    } finally {
                         l.countDown();
                     }
-
                     return response;
                 }
             };
@@ -1380,7 +1337,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncDoGetMaxRedirectTest() throws Throwable {
+    public void asyncDoGetMaxRedirectTest() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new Builder().setMaximumNumberOfRedirects(0).setFollowRedirects(true).build());
         try {
             // Use a l in case the assert fail
@@ -1416,7 +1373,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncDoGetNestedTest() throws Throwable {
+    public void asyncDoGetNestedTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             // FIXME find a proper website that redirects the same number of times whatever the language
@@ -1459,7 +1416,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncDoGetStreamAndBodyTest() throws Throwable {
+    public void asyncDoGetStreamAndBodyTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareGet("http://www.lemonde.fr").execute().get();
@@ -1470,7 +1427,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "online", "default_provider", "async" })
-    public void asyncUrlWithoutPathTest() throws Throwable {
+    public void asyncUrlWithoutPathTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareGet("http://www.lemonde.fr").execute().get();
@@ -1481,7 +1438,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "default_provider", "async" })
-    public void optionsTest() throws Throwable {
+    public void optionsTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareOptions(getTargetUrl()).execute().get();
@@ -1548,7 +1505,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "standalone", "default_provider", "async" })
-    public void asyncDoPostCancelTest() throws Throwable {
+    public void asyncDoPostCancelTest() throws Exception {
 
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {
@@ -1626,7 +1583,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "default_provider", "async" })
-    public void bodyAsByteTest() throws Throwable {
+    public void bodyAsByteTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.prepareGet(getTargetUrl()).execute().get();
@@ -1638,7 +1595,7 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
     }
 
     @Test(groups = { "default_provider", "async" })
-    public void mirrorByteTest() throws Throwable {
+    public void mirrorByteTest() throws Exception {
         final AsyncHttpClient client = getAsyncHttpClient(null);
         try {
             Response response = client.preparePost(getTargetUrl()).setBody("MIRROR").execute().get();
@@ -1649,5 +1606,5 @@ public abstract class AsyncProvidersBasicTest extends AbstractBasicTest {
         }
     }
 
-    protected abstract AsyncHttpProviderConfig getProviderConfig();
+    protected abstract AsyncHttpProviderConfig<?, ?> getProviderConfig();
 }

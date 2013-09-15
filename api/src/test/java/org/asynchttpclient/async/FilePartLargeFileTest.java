@@ -24,6 +24,7 @@ import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.FilePart;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 import org.testng.Assert;
@@ -35,7 +36,7 @@ public abstract class FilePartLargeFileTest extends AbstractBasicTest {
     public void testPutImageFile() throws Exception {
         AsyncHttpClient client = getAsyncHttpClient(new AsyncHttpClientConfig.Builder().setRequestTimeoutInMs(100 * 6000).build());
         try {
-            Response response = client.preparePut(getTargetUrl()).addBodyPart(new FilePart("test", LARGE_IMAGE_FILE, "application/octet-stream", "UTF-8")).execute().get();
+            Response response = client.preparePut(getTargetUrl()).addBodyPart(new FilePart("test", TestUtils.LARGE_IMAGE_FILE, "application/octet-stream", "UTF-8")).execute().get();
             Assert.assertEquals(200, response.getStatusCode());
         } finally {
             client.close();
@@ -44,8 +45,7 @@ public abstract class FilePartLargeFileTest extends AbstractBasicTest {
 
     @Test(groups = { "standalone", "default_provider" }, enabled = true)
     public void testPutLargeTextFile() throws Exception {
-        long repeats = (1024 * 1024 / PATTERN_BYTES.length) + 1;
-        File file = createTempFile(PATTERN_BYTES, (int) repeats);
+        File file = TestUtils.createTempFile(1024 * 1024);
 
         AsyncHttpClient client = getAsyncHttpClient(null);
         try {

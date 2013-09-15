@@ -39,6 +39,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.asynchttpclient.AsyncHttpClient;
 import org.asynchttpclient.AsyncHttpClientConfig.Builder;
+import org.asynchttpclient.async.util.TestUtils;
 import org.asynchttpclient.Response;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -55,7 +56,7 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
         /* @Override */
         public void handle(String pathInContext, Request r, HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException {
 
-            httpResponse.setContentType("text/html; charset=utf-8");
+            httpResponse.setContentType(TestUtils.TEXT_HTML_CONTENT_TYPE_WITH_UTF_8_CHARSET);
             Enumeration<?> e = httpRequest.getHeaderNames();
             String param;
             while (e.hasMoreElements()) {
@@ -134,11 +135,11 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void positiveHostnameVerifierTest() throws Throwable {
+    public void positiveHostnameVerifierTest() throws Exception {
 
         final AsyncHttpClient client = getAsyncHttpClient(new Builder().setHostnameVerifier(new PositiveHostVerifier()).setSSLContext(createSSLContext()).build());
         try {
-            Future<Response> f = client.preparePost(getTargetUrl()).setBody(SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute();
+            Future<Response> f = client.preparePost(getTargetUrl()).setBody(TestUtils.SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute();
             Response resp = f.get();
             assertNotNull(resp);
             assertEquals(resp.getStatusCode(), HttpServletResponse.SC_OK);
@@ -149,12 +150,12 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void negativeHostnameVerifierTest() throws Throwable {
+    public void negativeHostnameVerifierTest() throws Exception {
 
         final AsyncHttpClient client = getAsyncHttpClient(new Builder().setHostnameVerifier(new NegativeHostVerifier()).setSSLContext(createSSLContext()).build());
         try {
             try {
-                client.preparePost(getTargetUrl()).setBody(SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
+                client.preparePost(getTargetUrl()).setBody(TestUtils.SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
                 fail("ConnectException expected");
             } catch (ExecutionException ex) {
                 assertEquals(ex.getCause().getClass(), ConnectException.class);
@@ -165,11 +166,11 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void remoteIDHostnameVerifierTest() throws Throwable {
+    public void remoteIDHostnameVerifierTest() throws Exception {
 
         final AsyncHttpClient client = getAsyncHttpClient(new Builder().setHostnameVerifier(new CheckHost("bouette")).setSSLContext(createSSLContext()).build());
         try {
-            client.preparePost(getTargetUrl()).setBody(SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
+            client.preparePost(getTargetUrl()).setBody(TestUtils.SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
             fail("ConnectException expected");
         } catch (ExecutionException ex) {
             assertEquals(ex.getCause().getClass(), ConnectException.class);
@@ -179,11 +180,11 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void remoteNegHostnameVerifierTest() throws Throwable {
+    public void remoteNegHostnameVerifierTest() throws Exception {
         // request is made to 127.0.0.1, but cert presented for localhost - this should fail
         final AsyncHttpClient client = getAsyncHttpClient(new Builder().setHostnameVerifier(new CheckHost("localhost")).setSSLContext(createSSLContext()).build());
         try {
-            client.preparePost(getTargetUrl()).setBody(SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
+            client.preparePost(getTargetUrl()).setBody(TestUtils.SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
             fail("ConnectException expected");
         } catch (ExecutionException ex) {
             assertEquals(ex.getCause().getClass(), ConnectException.class);
@@ -193,11 +194,11 @@ public abstract class HostnameVerifierTest extends AbstractBasicHttpsTest {
     }
 
     @Test(groups = { "standalone", "default_provider" })
-    public void remotePosHostnameVerifierTest() throws Throwable {
+    public void remotePosHostnameVerifierTest() throws Exception {
 
         final AsyncHttpClient client = getAsyncHttpClient(new Builder().setHostnameVerifier(new CheckHost("127.0.0.1")).setSSLContext(createSSLContext()).build());
         try {
-            Response resp = client.preparePost(getTargetUrl()).setBody(SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
+            Response resp = client.preparePost(getTargetUrl()).setBody(TestUtils.SIMPLE_TEXT_FILE).setHeader("Content-Type", "text/html").execute().get();
             assertNotNull(resp);
             assertEquals(resp.getStatusCode(), HttpServletResponse.SC_OK);
             assertEquals(resp.getResponseBody(), "This is a simple test file");

@@ -23,6 +23,7 @@ import org.asynchttpclient.AsyncHttpClientConfig;
 import org.asynchttpclient.Request;
 import org.asynchttpclient.RequestBuilder;
 import org.asynchttpclient.Response;
+import org.asynchttpclient.async.util.TestUtils;
 import org.asynchttpclient.generators.InputStreamBodyGenerator;
 import org.testng.annotations.Test;
 
@@ -39,7 +40,7 @@ abstract public class ChunkingTest extends AbstractBasicTest {
      * Tests that the custom chunked stream result in success and content returned that is unchunked
      */
     @Test()
-    public void testCustomChunking() throws Throwable {
+    public void testCustomChunking() throws Exception {
         AsyncHttpClientConfig.Builder bc = new AsyncHttpClientConfig.Builder();
 
         bc.setAllowPoolingConnection(true);
@@ -55,7 +56,7 @@ abstract public class ChunkingTest extends AbstractBasicTest {
             RequestBuilder builder = new RequestBuilder("POST");
             builder.setUrl(getTargetUrl());
             // made buff in stream big enough to mark.
-            builder.setBody(new InputStreamBodyGenerator(new BufferedInputStream(new FileInputStream(LARGE_IMAGE_FILE), 400000)));
+            builder.setBody(new InputStreamBodyGenerator(new BufferedInputStream(new FileInputStream(TestUtils.LARGE_IMAGE_FILE), 400000)));
 
             Request r = builder.build();
 
@@ -70,7 +71,7 @@ abstract public class ChunkingTest extends AbstractBasicTest {
                 assertTrue("Should have failed due to chunking", response.getHeader("X-Exception").contains("invalid.chunk.length"));
                 fail("HARD Failing the test due to provided InputStreamBodyGenerator, chunking incorrectly:" + response.getHeader("X-Exception"));
             } else {
-                assertEquals(LARGE_IMAGE_BYTES, response.getResponseBodyAsBytes());
+                assertEquals(TestUtils.LARGE_IMAGE_BYTES, response.getResponseBodyAsBytes());
             }
         } finally {
             c.close();
